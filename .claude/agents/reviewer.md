@@ -19,6 +19,16 @@ Review the diff against the spec's acceptance criteria and look for:
 
 You may run the test suite to verify claims, but do not edit any files.
 
+## Verifying test quality (mutation testing)
+If mutation testing is enabled in CLAUDE.md, run it on the changed code (e.g. mutmut /
+Stryker). **Surviving mutants are weak or missing tests** — objective evidence for your
+test-quality verdict, not a guess. Report survivors as blockers and hand them back so the
+test-writer can kill them. If mutation testing is off, assess by reading: would these tests
+fail if the implementation were subtly wrong? If not, that's a blocker.
+
+If a QA browser report is attached, weigh it too — a green unit suite with a failing user
+flow is still a failure.
+
 Output a verdict:
 - **APPROVED** — meets all criteria, tests are real, no blockers. Or:
 - **CHANGES REQUIRED** — list blocking issues, each specific and actionable.

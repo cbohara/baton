@@ -11,6 +11,17 @@ agents stay reusable across repos.
 - Lint / format: `<e.g. ruff check . && ruff format .>`
 - Dev server (for integration review): `<e.g. npm run dev — serves on http://localhost:3000>`
 
+## Testing gates (toggle per project — enable only what fits)
+- Property-based testing: `<on | off>` — tool: `<e.g. Hypothesis>`
+- Mutation testing: `<on | off>` — command: `<e.g. mutmut run>` (slow; consider CI-only)
+- Browser QA (qa-browser leg): `<on | off>` — requires the Playwright MCP server
+- Visual regression: `<on | off>` — `<e.g. npx playwright test --update-snapshots to set baseline>`
+
+## Web app commands (only if this is a web app)
+- Dev server start: `<e.g. npm run dev>` serving at `<http://localhost:3000>`
+- E2E / browser test command: `<e.g. npx playwright test>`
+- Visual snapshot dir: `<e.g. tests/__snapshots__>`
+
 ## The loop (non-negotiable gates)
 1. **Spec** — concrete, testable acceptance criteria before anything else.
 2. **Red** — tests written first must FAIL meaningfully before implementation.

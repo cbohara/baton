@@ -149,7 +149,7 @@ prunes each branch the moment its PR merges:
 gh repo edit <owner>/<repo> --delete-branch-on-merge
 ```
 
-That handles the *remote*. For the *local* worktrees, use the `relayrm <issue>` helper (in
+That handles the *remote*. For the *local* worktrees, use the `handoffrm <issue>` helper (in
 `docs/relay-helpers.zsh`) to remove a finished worktree once its PR has merged.
 
 ## Local parallelism (optional)
@@ -159,16 +159,27 @@ worktree pre-step **out** of the relay (it's machine-specific) and put it in you
 Two helpers — one to watch, one to walk away:
 
 ```sh
-relay()   { ... }   # foreground: attached session, watch + steer.   relay 142
-relaybg() { ... }   # background: detached + logged, fire many.       relaybg 143 144 145
+handoff   <issue>            # foreground: attached session, watch + steer.   handoff 142
+handoffbg <issue> [more...]  # background: detached + logged, fire many.       handoffbg 143 144 145
+handoffrm <issue>            # cleanup: remove a finished worktree post-merge.  handoffrm 142
 ```
 
-Both create a sibling worktree `<repo>-wt-<issue>` on branch `issue-<issue>`, so every relay works in
-isolation — run as many as your machine handles, none stepping on the others. They ship identically
-(PR + auto-merge per the repo's Ship mode); foreground vs background only changes whether you watch it
-stream or check `../relay-<issue>.log` later. Start foreground until you trust the permission allowlist
+The functions are named to match the `/handoff` command you invoke inside the session. Both `handoff`
+and `handoffbg` create a sibling worktree `<repo>-wt-<issue>` on branch `issue-<issue>`, so every relay
+works in isolation — run as many as your machine handles, none stepping on the others. They ship
+identically (per the repo's Ship mode); foreground vs background only changes whether you watch it stream
+or check `../relay-<issue>.log` later. Start foreground until you trust the permission allowlist
 end-to-end (a background relay stalls silently on an un-allowed prompt), then graduate routine slices to
-background. The full functions are in `docs/relay-helpers.zsh` — source them or paste into `~/.zshrc`.
+background.
+
+The full functions live in `docs/relay-helpers.zsh`. **Source them** rather than pasting into `~/.zshrc`,
+so the relay repo stays the single source of truth (same reasoning as symlinking the agents) and your
+shell never drifts from canonical:
+
+```sh
+# in ~/.zshrc — guarded so a missing repo doesn't break shell startup
+[ -f "$HOME/git/relay/docs/relay-helpers.zsh" ] && source "$HOME/git/relay/docs/relay-helpers.zsh"
+```
 
 ## Tweak freely
 This is a starting point. The handoff logic is plain English in `commands/handoff.md` and

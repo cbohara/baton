@@ -97,6 +97,79 @@ project lean — enable only what fits.
   a required check in branch protection.
 - `mutation.yml` — opt-in (PR label or manual), since it's slow.
 
+## How the relay ships (Ship mode)
+The Anchor leg lands the work according to **Ship mode** in the repo's `CLAUDE.md`:
+- `auto-merge` (default) — open a PR (the durable artifact) and let CI merge it the moment
+  `pr-checks.yml` goes green. You never click anything; main stays always-verified. This is the
+  autopilot path: fire `/handoff`, walk away, come back to a merged-and-checked main.
+- `pr` — open a PR and stop. A human merges. Use when every diff deserves eyes.
+- `merge` — merge immediately, no CI wait. Throwaway/solo repos only; the in-session reviewer is
+  then the sole gate.
+
+If `auto-merge` is set but the repo has no required check to gate on, the relay does **not** merge
+blind — it leaves a plain PR open and tells you. So the seatbelt can't silently come off.
+
+### One-time setup for `auto-merge` (per repo)
+GitHub ships with neither branch protection nor auto-merge enabled by default, so a fresh repo
+needs two toggles before `auto-merge` actually gates:
+
+```sh
+# 1. allow auto-merge on the repo
+gh repo edit --enable-auto-merge
+
+# 2. require the pr-checks `tests` job on main (CI-gated, not human-gated)
+gh api -X PUT repos/{owner}/{repo}/branches/main/protection \
+  -f 'required_status_checks[strict]=true' \
+  -f 'required_status_checks[contexts][]=tests' \
+  -F 'enforce_admins=false' \
+  -F 'required_pull_request_reviews=null' \
+  -F 'restrictions=null'
+```
+
+`tests` is the job name from `pr-checks.yml` — change it if you renamed the job, and add more
+`contexts[]` lines for additional required checks (e.g. `browser`). `required_pull_request_reviews=null`
+keeps it gated on CI but not on a human approval, which is the point of autopilot. Until both are set,
+`auto-merge` safely falls back to leaving the PR open.
+
+Note: a PR opened by the relay in CI (via `relay.yml`) pushes with the default `GITHUB_TOKEN`, and
+GitHub won't trigger `pr-checks.yml` from that token — so auto-merge would wait forever. Either run
+`/handoff` locally (pushes under your creds, CI fires normally) or wire a PAT in `relay.yml` as noted
+there. Locally-run relays are unaffected.
+
+Heads-up for **private repos on the free plan**: GitHub won't let you require a status check there
+(branch protection and rulesets both need Pro or a public repo), so `auto-merge` has nothing to gate on
+and would just leave PRs open. Use Ship mode `merge` on those repos until you go Pro or public.
+
+### Keeping branches tidy
+Both `merge` and `auto-merge` leave the source branch behind by default — and with worktree fan-out
+(`<repo>-wt-<issue>`, see below) those `issue-*` branches add up fast. Turn on auto-delete so the remote
+prunes each branch the moment its PR merges:
+
+```sh
+gh repo edit <owner>/<repo> --delete-branch-on-merge
+```
+
+That handles the *remote*. For the *local* worktrees, use the `relayrm <issue>` helper (in
+`docs/relay-helpers.zsh`) to remove a finished worktree once its PR has merged.
+
+## Local parallelism (optional)
+`handoff.md` runs one relay in whatever tree you're in — it's deliberately generic so it works
+identically in GitHub Actions, locally, and on the web. To fan out across issues *locally*, keep the
+worktree pre-step **out** of the relay (it's machine-specific) and put it in your shell profile instead.
+Two helpers — one to watch, one to walk away:
+
+```sh
+relay()   { ... }   # foreground: attached session, watch + steer.   relay 142
+relaybg() { ... }   # background: detached + logged, fire many.       relaybg 143 144 145
+```
+
+Both create a sibling worktree `<repo>-wt-<issue>` on branch `issue-<issue>`, so every relay works in
+isolation — run as many as your machine handles, none stepping on the others. They ship identically
+(PR + auto-merge per the repo's Ship mode); foreground vs background only changes whether you watch it
+stream or check `../relay-<issue>.log` later. Start foreground until you trust the permission allowlist
+end-to-end (a background relay stalls silently on an un-allowed prompt), then graduate routine slices to
+background. The full functions are in `docs/relay-helpers.zsh` — source them or paste into `~/.zshrc`.
+
 ## Tweak freely
 This is a starting point. The handoff logic is plain English in `commands/handoff.md` and
 the agent prompts — edit them as your experience dictates. The red gate (leg 2) and the

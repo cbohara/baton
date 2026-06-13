@@ -74,10 +74,22 @@ a web app will. Skip any leg whose gate is off.
 - Non-blocking suggestions: note them in the summary, don't gold-plate.
 
 ## Anchor leg — Ship
+- Read **Ship mode** from `CLAUDE.md` (default `auto-merge` if unset).
 - Open or update the PR: `gh pr create` with a body that includes the acceptance criteria,
-  what changed, the QA report (if any), and the reviewer's verdict.
+  what changed, the QA report (if any), and the reviewer's verdict. The PR is the artifact —
+  the durable record of the work — regardless of mode.
+- Then land it per Ship mode:
+  - **`auto-merge`** (default): enable GitHub auto-merge so CI merges it the moment the
+    independent gate passes — `gh pr merge --auto --squash`. You never click anything, but
+    `pr-checks.yml` still has to go green first. If the repo has no required check (auto-merge
+    can't engage), DO NOT merge — leave the plain PR open and say so in the summary, so the
+    fall-through to an unchecked merge is never silent.
+  - **`pr`**: stop here. Leave the PR open for a human to merge.
+  - **`merge`**: merge now — `gh pr merge --squash`. Only valid when CLAUDE.md explicitly sets
+    this; it skips the independent gate, so the in-session reviewer is the sole check.
 - Print a short summary: criteria met, unit + full-suite status, mutation result (if run),
-  QA verdict (if run), review verdict, and anything left for human judgment.
+  QA verdict (if run), review verdict, the Ship mode taken (and whether auto-merge engaged or
+  fell back to a plain PR), and anything left for human judgment.
 
 Throughout: keep changes scoped to this one task. If the task is too large to fit
 cleanly (tests sprawl, the diff balloons), STOP and recommend splitting the issue.

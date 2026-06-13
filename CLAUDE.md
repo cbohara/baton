@@ -11,6 +11,15 @@ agents stay reusable across repos.
 - Lint / format: `<e.g. ruff check . && ruff format .>`
 - Dev server (for integration review): `<e.g. npm run dev — serves on http://localhost:3000>`
 
+## Ship mode (how the Anchor leg lands the work)
+- Ship mode: `<auto-merge | pr | merge>` — default `auto-merge`.
+  - `auto-merge` — open a PR (the artifact), enable GitHub auto-merge, let CI (`pr-checks.yml`)
+    merge it the moment checks pass. Momentum without losing the independent gate. Needs branch
+    protection requiring `pr-checks`; if that gate isn't present, it falls back to a plain PR and says so.
+  - `pr` — open a PR and stop (a human merges). Use when you want eyes on every diff.
+  - `merge` — merge immediately, no waiting on CI. Throwaway/solo repos only: the in-session
+    reviewer is then your ONLY gate (the code's author grading its own work).
+
 ## Testing gates (toggle per project — enable only what fits)
 - Property-based testing: `<on | off>` — tool: `<e.g. Hypothesis>`
 - Mutation testing: `<on | off>` — command: `<e.g. mutmut run>` (slow; consider CI-only)

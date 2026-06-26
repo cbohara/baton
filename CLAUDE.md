@@ -22,7 +22,6 @@ agents stay reusable across repos.
 
 ## Testing gates (toggle per project — enable only what fits)
 - Property-based testing: `<on | off>` — tool: `<e.g. Hypothesis>`
-- Mutation testing: `<on | off>` — command: `<e.g. mutmut run>` (slow; consider CI-only)
 - Browser QA (qa-browser leg): `<on | off>` — requires the Playwright MCP server
 - Visual regression: `<on | off>` — `<e.g. npx playwright test --update-snapshots to set baseline>`
 

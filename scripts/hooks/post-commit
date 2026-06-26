@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Re-sync ~/.claude with this repo's baton command + agents after every commit,
+# so a rename or a new agent never leaves your global config stale.
+# Installed via: scripts/link-claude.sh --install-hook  (sets core.hooksPath=scripts/hooks)
+set -euo pipefail
+exec "$(git rev-parse --show-toplevel)/scripts/link-claude.sh"

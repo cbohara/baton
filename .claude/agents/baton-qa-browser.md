@@ -1,5 +1,5 @@
 ---
-name: qa-browser
+name: baton-qa-browser
 description: Exercises the running web app against the spec's acceptance criteria in a real browser, captures screenshots, and reports PASS/FAIL. Use after Green, for web UI work. Requires the Playwright MCP server. Read-only on code.
 tools: Read, Grep, Glob, Bash
 ---

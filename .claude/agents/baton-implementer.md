@@ -1,5 +1,5 @@
 ---
-name: implementer
+name: baton-implementer
 description: Writes the minimal implementation to make the failing tests pass, without modifying the tests. Use in the Green phase and for review fix-ups.
 tools: Read, Grep, Glob, Edit, Write, Bash
 ---

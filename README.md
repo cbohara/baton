@@ -16,10 +16,6 @@ Claude Code on the web — unchanged.
     qa-browser.md          # leg 5: verifies the running app in a real browser (Playwright MCP)
   settings.json            # permission defaults
 CLAUDE.md                  # per-project commands, gate toggles & conventions (fill this in)
-ci-templates/              # inert GitHub Actions templates — copy into a project's .github/workflows/
-  baton.yml                # issue labelled `baton` → runs the pipeline in CI, opens a PR
-  pr-checks.yml            # on PR: full suite + browser e2e/visual (the independent gate)
-  mutation.yml             # opt-in (label/manual): mutation testing
 ```
 
 ## Use it in one project (per-repo)
@@ -81,27 +77,19 @@ Baton supports four heavier techniques, toggled per project in `CLAUDE.md` under
 Why the second tier is better in CI: those gates need a browser and a running app, they take
 real time, and — like your test suite — they're the *independent* checks the agent can't
 self-report its way past. Run them in-session for thorough local passes; wire them as their own
-workflows on the PR for hands-off autonomy. Templates for both tiers are in `ci-templates/`.
+workflows on the PR for hands-off autonomy.
 
 **Playwright MCP setup** (once, for browser QA): `claude mcp add playwright npx @playwright/mcp@latest`.
 
 A backend library enables only property-based + mutation; a web app turns the rest on too. Keep a
 project lean — enable only what fits.
 
-## CI templates
-`ci-templates/` holds workflow files as inert references — they only run once copied into a
-*project's* `.github/workflows/`. Copy the ones you want and edit the install/test steps:
-- `baton.yml` — issue labelled `baton` triggers the pipeline in CI (needs `.claude/` committed in
-  that repo and a `CLAUDE_CODE_OAUTH_TOKEN` secret from `claude setup-token`).
-- `pr-checks.yml` — the independent gate: full suite + Playwright e2e/visual on every PR. Make this
-  a required check in branch protection.
-- `mutation.yml` — opt-in (PR label or manual), since it's slow.
-
 ## How baton ships (Ship mode)
 The Anchor leg lands the work according to **Ship mode** in the repo's `CLAUDE.md`:
 - `auto-merge` (default) — open a PR (the durable artifact) and let CI merge it the moment
-  `pr-checks.yml` goes green. You never click anything; main stays always-verified. This is the
-  autopilot path: fire `/handoff`, walk away, come back to a merged-and-checked main.
+  your required PR check goes green. You never click anything; main stays always-verified. This is
+  the autopilot path: fire `/handoff`, walk away, come back to a merged-and-checked main. (Bring your
+  own CI — any required status check works; baton no longer ships workflow templates.)
 - `pr` — open a PR and stop. A human merges. Use when every diff deserves eyes.
 - `merge` — merge immediately, no CI wait. Throwaway/solo repos only; the in-session reviewer is
   then the sole gate.
@@ -117,7 +105,7 @@ needs two toggles before `auto-merge` actually gates:
 # 1. allow auto-merge on the repo
 gh repo edit --enable-auto-merge
 
-# 2. require the pr-checks `tests` job on main (CI-gated, not human-gated)
+# 2. require your CI check job on main (CI-gated, not human-gated)
 gh api -X PUT repos/{owner}/{repo}/branches/main/protection \
   -f 'required_status_checks[strict]=true' \
   -f 'required_status_checks[contexts][]=tests' \
@@ -126,15 +114,15 @@ gh api -X PUT repos/{owner}/{repo}/branches/main/protection \
   -F 'restrictions=null'
 ```
 
-`tests` is the job name from `pr-checks.yml` — change it if you renamed the job, and add more
-`contexts[]` lines for additional required checks (e.g. `browser`). `required_pull_request_reviews=null`
-keeps it gated on CI but not on a human approval, which is the point of autopilot. Until both are set,
-`auto-merge` safely falls back to leaving the PR open.
+`tests` is your CI's job name — change it to match your workflow, and add more `contexts[]` lines for
+additional required checks (e.g. `browser`). `required_pull_request_reviews=null` keeps it gated on CI
+but not on a human approval, which is the point of autopilot. Until both are set, `auto-merge` safely
+falls back to leaving the PR open.
 
-Note: a PR opened by the pipeline in CI (via `baton.yml`) pushes with the default `GITHUB_TOKEN`, and
-GitHub won't trigger `pr-checks.yml` from that token — so auto-merge would wait forever. Either run
-`/handoff` locally (pushes under your creds, CI fires normally) or wire a PAT in `baton.yml` as noted
-there. Locally-run pipelines are unaffected.
+Note: if you run `/handoff` from your own CI workflow, a PR it opens with the default `GITHUB_TOKEN`
+won't trigger your other workflows — so auto-merge would wait forever on a check that never fires.
+Either run `/handoff` locally (pushes under your creds, CI fires normally) or push from CI with a PAT
+instead of the default token. Locally-run pipelines are unaffected.
 
 Heads-up for **private repos on the free plan**: GitHub won't let you require a status check there
 (branch protection and rulesets both need Pro or a public repo), so `auto-merge` has nothing to gate on

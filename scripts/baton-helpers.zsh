@@ -1,7 +1,7 @@
 # baton shell helpers — local parallelism for the handoff pipeline.
 #
 # Single source of truth: source this from your ~/.zshrc so it never drifts —
-#   [ -f /path/to/baton/docs/baton-helpers.zsh ] && source /path/to/baton/docs/baton-helpers.zsh
+#   [ -f /path/to/baton/scripts/baton-helpers.zsh ] && source /path/to/baton/scripts/baton-helpers.zsh
 #
 # One verb, matching the /handoff command you invoke inside the session:
 #   handoff <issue>             foreground — attached, watch + steer

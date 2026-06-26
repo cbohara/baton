@@ -183,13 +183,13 @@ Start with foreground `handoff` until you trust the permission allowlist end-to-
 stalls silently on an un-allowed prompt — then graduate routine slices to `handoff bg`. Note: you can't
 remove the worktree you're currently `cd`'d into, so run `handoff rm` from the main checkout.
 
-The full functions live in `docs/baton-helpers.zsh`. **Source them** rather than pasting into `~/.zshrc`,
+The full functions live in `scripts/baton-helpers.zsh`. **Source them** rather than pasting into `~/.zshrc`,
 so the baton repo stays the single source of truth (same reasoning as symlinking the agents) and your
 shell never drifts from canonical:
 
 ```sh
 # in ~/.zshrc — guarded so a missing repo doesn't break shell startup
-[ -f "$HOME/git/baton/docs/baton-helpers.zsh" ] && source "$HOME/git/baton/docs/baton-helpers.zsh"
+[ -f "$HOME/git/baton/scripts/baton-helpers.zsh" ] && source "$HOME/git/baton/scripts/baton-helpers.zsh"
 ```
 
 ## Tweak freely

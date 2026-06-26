@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300" width="960" height="300" role="img" aria-label="A rainbow baton mid-twirl, trailing color and sparkles">
+  <title>baton</title>
+  <defs>
+    <linearGradient id="rainbow" gradientUnits="userSpaceOnUse" x1="240" y1="0" x2="745" y2="0">
+      <stop offset="0"    stop-color="#ff5d5d"/>
+      <stop offset="0.2"  stop-color="#ffac4b"/>
+      <stop offset="0.4"  stop-color="#ffe14b"/>
+      <stop offset="0.6"  stop-color="#5ddf7a"/>
+      <stop offset="0.8"  stop-color="#4bb8ff"/>
+      <stop offset="1"    stop-color="#b06bff"/>
+    </linearGradient>
+    <linearGradient id="rod" x1="370" y1="219" x2="590" y2="81" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffe39a"/>
+      <stop offset="1" stop-color="#ff9e3d"/>
+    </linearGradient>
+  </defs>
+
+  <!-- twirl motion trails (drawn first, so the baton sits on top) -->
+  <g fill="none" stroke-linecap="round">
+    <path d="M 250 205 C 330 70, 640 60, 740 175" stroke="url(#rainbow)" stroke-width="26" opacity="0.92"/>
+    <path d="M 288 226 C 360 112, 612 100, 712 196" stroke="url(#rainbow)" stroke-width="12" opacity="0.5"/>
+  </g>
+
+  <!-- the baton: a gold rod twirling at a jaunty angle, with two end knobs -->
+  <g stroke-linecap="round">
+    <line x1="370" y1="219" x2="590" y2="81" stroke="#e07a2d" stroke-width="24"/>
+    <line x1="370" y1="219" x2="590" y2="81" stroke="url(#rod)" stroke-width="16"/>
+    <circle cx="370" cy="219" r="21" fill="#ff5d5d" stroke="#d83a55" stroke-width="2"/>
+    <circle cx="590" cy="81"  r="21" fill="#7a5bff" stroke="#5a3fd0" stroke-width="2"/>
+    <circle cx="363" cy="212" r="6" fill="#ffffff" opacity="0.65"/>
+    <circle cx="583" cy="74"  r="6" fill="#ffffff" opacity="0.65"/>
+  </g>
+
+  <!-- sparkles -->
+  <g>
+    <path transform="translate(165,80) scale(1.4)"  d="M0,-10 C1.2,-3 3,-1.2 10,0 C3,1.2 1.2,3 0,10 C-1.2,3 -3,1.2 -10,0 C-3,-1.2 -1.2,-3 0,-10 Z" fill="#ffd84b"/>
+    <path transform="translate(800,70) scale(1.1)"  d="M0,-10 C1.2,-3 3,-1.2 10,0 C3,1.2 1.2,3 0,10 C-1.2,3 -3,1.2 -10,0 C-3,-1.2 -1.2,-3 0,-10 Z" fill="#5ddf7a"/>
+    <path transform="translate(846,166) scale(0.8)" d="M0,-10 C1.2,-3 3,-1.2 10,0 C3,1.2 1.2,3 0,10 C-1.2,3 -3,1.2 -10,0 C-3,-1.2 -1.2,-3 0,-10 Z" fill="#4bb8ff"/>
+    <path transform="translate(250,255) scale(1.0)" d="M0,-10 C1.2,-3 3,-1.2 10,0 C3,1.2 1.2,3 0,10 C-1.2,3 -3,1.2 -10,0 C-3,-1.2 -1.2,-3 0,-10 Z" fill="#ff5d5d"/>
+    <path transform="translate(628,236) scale(0.7)" d="M0,-10 C1.2,-3 3,-1.2 10,0 C3,1.2 1.2,3 0,10 C-1.2,3 -3,1.2 -10,0 C-3,-1.2 -1.2,-3 0,-10 Z" fill="#b06bff"/>
+    <path transform="translate(120,182) scale(0.6)" d="M0,-10 C1.2,-3 3,-1.2 10,0 C3,1.2 1.2,3 0,10 C-1.2,3 -3,1.2 -10,0 C-3,-1.2 -1.2,-3 0,-10 Z" fill="#ffac4b"/>
+  </g>
+</svg>

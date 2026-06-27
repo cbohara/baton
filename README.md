@@ -4,10 +4,8 @@
 
 <h1 align="center">baton</h1>
 
-<p align="center"><em>Hand off the work, not the whole conversation.</em></p>
-
-A portable spec → red-tests → implement → review loop for Claude Code. You hand off a
-task and a crew of subagents runs it leg by leg, checking each baton pass before the
+A portable `spec → tests → implement → review` path for Claude Code. You hand off a
+task and a crew of subagents runs the path leg by leg, checking each baton pass before the
 next runner takes off. The same files run locally, in CI (`claude-code-action`), or on
 Claude Code on the web — unchanged.
 

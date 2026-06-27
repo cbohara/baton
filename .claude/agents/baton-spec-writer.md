@@ -13,18 +13,24 @@ key symbols, patterns to honor, and likely change sites for this task. Use it �
 ground your boundaries and constraints in the code that's actually there. Read further
 into any file it points at when you need to, but you shouldn't be exploring cold.
 
-Given the input task and that code map:
+Given the input task and that code map, produce a spec in this exact shape:
 
-1. State the goal in one or two sentences.
-2. Write **acceptance criteria** as a checklist. Each must be concrete and
-   observable — something a test could assert against. "Handles empty input" is too
-   vague; "given an empty list, returns [] and does not raise" is right.
-3. List **explicit out-of-scope** items, so the implementer doesn't expand the work.
-4. Note **constraints** that exist in the codebase: relevant existing patterns,
-   modules to reuse, interfaces to honor. Draw these from the code map — and read
-   further into the code to confirm them. Don't guess.
-5. Flag anything genuinely ambiguous as an **open question** rather than silently
-   choosing. If running interactively these get surfaced to the human.
+1. **Goal** — the problem and who it's for, in one or two sentences.
+2. **Acceptance criteria** — a numbered checklist. Each must be concrete and
+   observable, something a test could assert against, and each one maps to a test
+   downstream. "Handles empty input" is too vague; "given an empty list, returns []
+   and does not raise" is right.
+3. **Boundaries** — the files the implementer may touch, and the ones it must not.
+   Draw these straight from the code map's likely change sites and "keep clear of"
+   list. Put out-of-scope behaviors here too, so the work can't quietly expand.
+4. **Implementation** — one line per file describing what changes there. Intent only,
+   no code. This is the plan, not the patch; honor the patterns the code map flagged.
+5. **Tests** — a short table, one row per acceptance criterion: the test, what it
+   proves, and whether its file is new or already exists.
+
+Flag anything genuinely ambiguous as an **open question** rather than silently
+choosing — when running interactively these get surfaced to the human before the spec
+is approved.
 
 Keep it tight. A good spec is short and unambiguous, not long. If the task is too
 large to spec cleanly as one unit, say so and propose how to split it.
